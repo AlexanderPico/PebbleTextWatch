@@ -1,43 +1,55 @@
 #include "num2words-en.h"
 #include "string.h"
 
-static const char* const ONES[] = {
-  "o'clock",
-  "one",
-  "two",
-  "three",
-  "four",
-  "five",
-  "six",
-  "seven",
-  "eight",
-  "nine"
+static const char* const JI_TWELVE[] = {
+  "",
+  "ichi ji",
+  "ni ji",
+  "san ji",
+  "yo ji",
+  "go ji",
+  "roku ji",
+  "shichi ji",
+  "hachi ji",
+  "kyu ji",
+  "ju ji",
+  "ju ichi ji",
+  "ju ni ji"
 };
 
-static const char* const TEENS[] ={
+static const char* const FUN_ONES[] = {
   "",
-  "eleven",
-  "twelve",
-  "thirteen",
-  "fourteen",
-  "fifteen",
-  "sixteen",
-  "seventeen",
-  "eightteen",
-  "nineteen"
+  "ippun",
+  "ni fun",
+  "san pun",
+  "yon pun ",
+  "go fun",
+  "roppun",
+  "nana fun",
+  "happun",
+  "kyu fun"
 };
 
-static const char* const TENS[] = {
+static const char* const FUN_TENS[] ={
   "",
-  "ten",
-  "twenty",
-  "thirty",
-  "forty",
-  "fifty",
-  "sixty",
-  "seventy",
-  "eighty",
-  "ninety"
+  "juppun",
+  "ni juppun",
+  "san juppun",
+  "yon juppun",
+  "go juppun",
+  "roku juppun",
+  "nana juppun",
+  "roku juppon",
+  "kyu juppon"
+};
+
+static const char* const FUN_TENS_PRE[] = {
+  "",
+  "ju",
+  "ni ju",
+  "san ju",
+  "yon ju",
+  "go ju"
 };
 
 static size_t append_number(char* words, int num) {
@@ -47,22 +59,20 @@ static size_t append_number(char* words, int num) {
   size_t len = 0;
 
   if (tens_val > 0) {
-    if (tens_val == 1 && num != 10) {
-      strcat(words, TEENS[ones_val]);
-      return strlen(TEENS[ones_val]);
+    if (ones_val == 0) {
+      strcat(words, FUN_TENS[tens_val]);
+      len += strlen(FUN_TENS[tens_val]);
     }
-    strcat(words, TENS[tens_val]);
-    len += strlen(TENS[tens_val]);
-    if (ones_val > 0) {
-      strcat(words, " ");
-      len += 1;
+    else {
+      strcat(words, FUN_TENS_PRE[tens_val]);
+      len += strlen(FUN_TENS_PRE[tens_val]);
     }
+    strcat(words, "-");
+    len += 1;
   }
 
-  if (ones_val > 0 || num == 0) {
-    strcat(words, ONES[ones_val]);
-    len += strlen(ONES[ones_val]);
-  }
+  strcat(words, FUN_ONES[ones_val]);
+  len += strlen(FUN_ONES[ones_val]);
   return len;
 }
 
@@ -80,14 +90,14 @@ void time_to_words(int hours, int minutes, char* words, size_t length) {
   memset(words, 0, length);
 
   if (hours == 0 || hours == 12) {
-    remaining -= append_string(words, remaining, TEENS[2]);
+    remaining -= append_string(words, remaining, JI_TWELVE[12]);
   } else {
-    remaining -= append_number(words, hours % 12);
+    remaining -= append_string(words, remaining, JI_TWELVE[hours % 12]);
   }
 
-  remaining -= append_string(words, remaining, " ");
+  remaining -= append_string(words, remaining, "-");
   remaining -= append_number(words, minutes);
-  remaining -= append_string(words, remaining, " ");
+  remaining -= append_string(words, remaining, "-");
 }
 
 void time_to_3words(int hours, int minutes, char *line1, char *line2, char *line3, size_t length)
@@ -100,7 +110,7 @@ void time_to_3words(int hours, int minutes, char *line1, char *line2, char *line
 	memset(line3, 0, length);
 	
 	char *start = value;
-	char *pch = strstr (start, " ");
+	char *pch = strstr (start, "-");
 	while (pch != NULL) {
 		if (line1[0] == 0) {
 			memcpy(line1, start, pch-start);
@@ -110,15 +120,6 @@ void time_to_3words(int hours, int minutes, char *line1, char *line2, char *line
 			memcpy(line3, start, pch-start);
 		}
 		start += pch-start+1;
-		pch = strstr(start, " ");
-	}
-	
-	// Truncate long teen values
-	if (strlen(line2) > 7) {
-		char *pch = strstr(line2, "teen");
-		if (pch) {
-			memcpy(line3, pch, 4);
-			pch[0] = 0;
-		}
+		pch = strstr(start, "-");
 	}
 }

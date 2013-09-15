@@ -4,18 +4,18 @@
 
 #include "num2words-en.h"
 
-#define DEBUG 0
+#define DEBUG 1
 #define BUFFER_SIZE 44
 
 #define MY_UUID { 0x49, 0x6E, 0x04, 0xAD, 0x13, 0x2A, 0x48, 0xAB, 0xB1, 0x65, 0x7F, 0xF4, 0xA9, 0x98, 0x72, 0xD2 }
 PBL_APP_INFO(MY_UUID,
-             "TextWatch", "Wip Interactive",
+             "TextWatch-Japanese", "Alexander Pico",
              1, 0,
              DEFAULT_MENU_ICON,
 #if DEBUG
              APP_INFO_STANDARD_APP
 #else
-			 APP_INFO_WATCH_FACE
+	     APP_INFO_WATCH_FACE
 #endif
 );
 
@@ -75,7 +75,7 @@ void makeAnimationsForLayers(Line *line, TextLayer *current, TextLayer *next)
 }
 
 // Update line
-void updateLineTo(Line *line, char lineStr[2][BUFFER_SIZE], char *value)
+void updateLineTo(Line *line, char lineStr[2][BUFFER_SIZE], char *value, bool bold)
 {
 	TextLayer *next, *current;
 	
@@ -83,6 +83,21 @@ void updateLineTo(Line *line, char lineStr[2][BUFFER_SIZE], char *value)
 	current = (rect.origin.x == 0) ? &line->currentLayer : &line->nextLayer;
 	next = (current == &line->currentLayer) ? &line->nextLayer : &line->currentLayer;
 	
+	// Override font per line(bold) and length(size)
+	if (bold) { //hours (ji)
+	  if (strlen(value) > 8) {
+		text_layer_set_font(next, fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK));
+	  } else {
+		text_layer_set_font(next, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
+	  }
+	} else { //minutes (fun)
+	  if (strlen(value) > 7) {
+		text_layer_set_font(next, fonts_get_system_font(FONT_KEY_GOTHIC_28));
+	  } else {
+		text_layer_set_font(next, fonts_get_system_font(FONT_KEY_BITHAM_42_LIGHT));
+	  }
+ 	}
+
 	// Update correct text only
 	if (current == &line->currentLayer) {
 		memset(lineStr[1], 0, BUFFER_SIZE);
@@ -102,7 +117,7 @@ bool needToUpdateLine(Line *line, char lineStr[2][BUFFER_SIZE], char *nextValue)
 {
 	char *currentStr;
 	GRect rect = layer_get_frame(&line->currentLayer.layer);
-	currentStr = (rect.origin.x == 0) ? lineStr[0] : lineStr[1];
+	currentStr = lineStr[1]; //(rect.origin.x == 0) ? lineStr[0] : lineStr[1]; //fails to update fun_tens to fun_tens_pre
 
 	if (memcmp(currentStr, nextValue, strlen(nextValue)) != 0 ||
 		(strlen(nextValue) == 0 && strlen(currentStr) != 0)) {
@@ -122,13 +137,13 @@ void display_time(PblTm *t)
 	time_to_3words(t->tm_hour, t->tm_min, textLine1, textLine2, textLine3, BUFFER_SIZE);
 	
 	if (needToUpdateLine(&line1, line1Str, textLine1)) {
-		updateLineTo(&line1, line1Str, textLine1);	
+		updateLineTo(&line1, line1Str, textLine1, true);	
 	}
 	if (needToUpdateLine(&line2, line2Str, textLine2)) {
-		updateLineTo(&line2, line2Str, textLine2);	
+		updateLineTo(&line2, line2Str, textLine2, false);	
 	}
 	if (needToUpdateLine(&line3, line3Str, textLine3)) {
-		updateLineTo(&line3, line3Str, textLine3);	
+		updateLineTo(&line3, line3Str, textLine3, false);	
 	}
 }
 
@@ -146,7 +161,7 @@ void display_initial_time(PblTm *t)
 // Configure the first line of text
 void configureBoldLayer(TextLayer *textlayer)
 {
-	text_layer_set_font(textlayer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
+	text_layer_set_font(textlayer, fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK));
 	text_layer_set_text_color(textlayer, GColorWhite);
 	text_layer_set_background_color(textlayer, GColorClear);
 	text_layer_set_text_alignment(textlayer, GTextAlignmentLeft);
@@ -155,7 +170,7 @@ void configureBoldLayer(TextLayer *textlayer)
 // Configure for the 2nd and 3rd lines
 void configureLightLayer(TextLayer *textlayer)
 {
-	text_layer_set_font(textlayer, fonts_get_system_font(FONT_KEY_BITHAM_42_LIGHT));
+	text_layer_set_font(textlayer, fonts_get_system_font(FONT_KEY_GOTHIC_28));
 	text_layer_set_text_color(textlayer, GColorWhite);
 	text_layer_set_background_color(textlayer, GColorClear);
 	text_layer_set_text_alignment(textlayer, GTextAlignmentLeft);
@@ -171,15 +186,12 @@ void configureLightLayer(TextLayer *textlayer)
 void up_single_click_handler(ClickRecognizerRef recognizer, Window *window) {
 	(void)recognizer;
 	(void)window;
-	
-	t.tm_min += 1;
-	if (t.tm_min >= 60) {
-		t.tm_min = 0;
-		t.tm_hour += 1;
+
+	//cycle through hours	
+	t.tm_hour += 1;
 		
-		if (t.tm_hour >= 24) {
-			t.tm_hour = 0;
-		}
+	if (t.tm_hour >= 24) {
+		t.tm_hour = 0;
 	}
 	display_time(&t);
 }
@@ -189,10 +201,10 @@ void down_single_click_handler(ClickRecognizerRef recognizer, Window *window) {
 	(void)recognizer;
 	(void)window;
 	
-	t.tm_min -= 1;
-	if (t.tm_min < 0) {
-		t.tm_min = 59;
-		t.tm_hour -= 1;
+	//cycle through minutes
+	t.tm_min += 1;
+	if (t.tm_min >= 60) {
+		t.tm_min = 0;
 	}
 	display_time(&t);
 }
@@ -220,20 +232,20 @@ void handle_init(AppContextRef ctx) {
 	resource_init_current_app(&APP_RESOURCES);
 	
 	// 1st line layers
-	text_layer_init(&line1.currentLayer, GRect(0, 18, 144, 50));
-	text_layer_init(&line1.nextLayer, GRect(144, 18, 144, 50));
+	text_layer_init(&line1.currentLayer, GRect(0, 10, 144, 50));
+	text_layer_init(&line1.nextLayer, GRect(144, 10, 144, 50));
 	configureBoldLayer(&line1.currentLayer);
 	configureBoldLayer(&line1.nextLayer);
 
 	// 2nd layers
-	text_layer_init(&line2.currentLayer, GRect(0, 55, 144, 50));
-	text_layer_init(&line2.nextLayer, GRect(144, 55, 144, 50));
+	text_layer_init(&line2.currentLayer, GRect(0, 47, 144, 50));
+	text_layer_init(&line2.nextLayer, GRect(144, 47, 144, 50));
 	configureLightLayer(&line2.currentLayer);
 	configureLightLayer(&line2.nextLayer);
 
 	// 3rd layers
-	text_layer_init(&line3.currentLayer, GRect(0, 92, 144, 50));
-	text_layer_init(&line3.nextLayer, GRect(144, 92, 144, 50));
+	text_layer_init(&line3.currentLayer, GRect(0, 84, 144, 50));
+	text_layer_init(&line3.nextLayer, GRect(144, 84, 144, 50));
 	configureLightLayer(&line3.currentLayer);
 	configureLightLayer(&line3.nextLayer);
 
