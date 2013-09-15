@@ -1,15 +1,11 @@
-Pebble Text Watch
-=================
+Japanese Text Watch (Romanji)
+======================================
 
-On the first launch of Pebble SDK, TextWatch application was not part of the code examples.
-Many people wanted to change the texts into their own language and with this app we hope that others will improve it 
-and translate it into many more languages.
+The Japanese (Romanji) version of the [Pebble Text Watch project](https://github.com/wearewip/PebbleTextWatch). This version shows hours (ji) and minutes (fun) in romanji text, just as you would speak it in Japanese. Just add "Ima" to the beginning and "desu" to the end and you'll have a complete sentence. For example, "Ima, kyu ji san ju nana fun desu" translates to "It's now nine thirty-six". All the Japanese words between "Ima" and "desu" are provided by the watchface.
 
-A video with the text changing animation can be found here: http://www.youtube.com/watch?v=vVTCtfZ-GsU
+***This is particularly useful watchface if you are learning Japanese!***
 
-Compiled build: http://c.wip.ro/0t0i0J172R2Q
+  
+  
+![Text watch photo](https://github.com/AlexanderPico/PebbleTextWatch/blob/japanese/photo.jpg)
 
-Romanian language source code available in the textRO branch: https://github.com/wearewip/PebbleTextWatch/tree/textRO
-
-Screenshot:  
-![Text watch screenshot](http://c.wip.ro/image/221C402K3y0t/photo.JPG)
