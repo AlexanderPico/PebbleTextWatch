@@ -27,7 +27,7 @@ static const char* const FUN_ONES[] = {
   "roppun",
   "nana fun",
   "happun",
-  "kyu fun"
+  "kyu\u2002fun"
 };
 
 static const char* const FUN_TENS[] ={

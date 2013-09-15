@@ -6,6 +6,24 @@
 	    "type":"raw",
 	    "defName":"DUMMY",
 	    "file":"resource_map.json"
-	   }
+	   },
+        {
+        "type": "font",
+	"characterRegex": "[0-9a-zA-Z]",
+        "defName": "FONT_COOLVETICA_40",
+        "file": "fonts/COOLVETI.TTF"
+        },
+        {
+        "type": "font",
+        "characterRegex": "[0-9a-zA-Z]",
+        "defName": "FONT_CICLE_FINA_32",
+        "file": "fonts/CicleFina.ttf"
+        },
+        {
+        "type": "font",
+        "characterRegex": "[0-9a-zA-Z]",
+        "defName": "FONT_CICLE_FINA_40",
+        "file": "fonts/CicleFina.ttf"
+        }
 	  ]
 }
