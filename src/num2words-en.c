@@ -11,10 +11,10 @@ static const char* const JI_TWELVE[] = {
   "roku ji",
   "shichi ji",
   "hachi ji",
-  "kyu ji",
-  "ju ji",
-  "ju ichi ji",
-  "ju ni ji"
+  "ku ji",
+  "juu ji",
+  "juu ichi ji",
+  "juu ni ji"
 };
 
 static const char* const FUN_ONES[] = {
@@ -22,34 +22,35 @@ static const char* const FUN_ONES[] = {
   "ippun",
   "ni fun",
   "san pun",
-  "yon pun ",
+  "yon pun",
   "go fun",
   "roppun",
   "nana fun",
   "happun",
-  "kyu\u2002fun"
+  "kyuu fun"
 };
 
 static const char* const FUN_TENS[] ={
+  //hyphens are used to signal line breaks
   "",
   "juppun",
-  "ni juppun",
-  "san juppun",
-  "yon juppun",
-  "go juppun",
-  "roku juppun",
-  "nana juppun",
-  "roku juppon",
-  "kyu juppon"
+  "ni-juppun", 
+  "san-juppun", 
+  "yon-juppun",
+  "go-juppun",
+  "roku-juppun",
+  "nana-juppun",
+  "roku-juppon",
+  "kyu-juppon"
 };
 
 static const char* const FUN_TENS_PRE[] = {
   "",
-  "ju",
-  "ni ju",
-  "san ju",
-  "yon ju",
-  "go ju"
+  "juu",
+  "ni juu",
+  "san juu",
+  "yon juu",
+  "go juu"
 };
 
 static size_t append_number(char* words, int num) {

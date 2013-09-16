@@ -38,11 +38,6 @@ static char line1Str[2][BUFFER_SIZE];
 static char line2Str[2][BUFFER_SIZE];
 static char line3Str[2][BUFFER_SIZE];
 
-static bool textInitialized = false;
-
-#define font_fun_sm fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CICLE_FINA_32))
-#define font_fun_lg fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CICLE_FINA_40))
-
 // Animation handler
 void animationStoppedHandler(struct Animation *animation, bool finished, void *context)
 {
@@ -86,15 +81,6 @@ void updateLineTo(Line *line, char lineStr[2][BUFFER_SIZE], char *value)
 	current = (rect.origin.x == 0) ? &line->currentLayer : &line->nextLayer;
 	next = (current == &line->currentLayer) ? &line->nextLayer : &line->currentLayer;
 	
-	// Override font for really long lines of text (e.g., xxx juppon)
-	if (strstr(value, "juppun") != NULL) {
-	  if (strlen(value) > 8) {
-		text_layer_set_font(next, font_fun_sm);
-	  } else {
-		text_layer_set_font(next, font_fun_lg);
-	  }
-	}
-
 	// Update correct text only
 	if (current == &line->currentLayer) {
 		memset(lineStr[1], 0, BUFFER_SIZE);
@@ -113,8 +99,8 @@ void updateLineTo(Line *line, char lineStr[2][BUFFER_SIZE], char *value)
 bool needToUpdateLine(Line *line, char lineStr[2][BUFFER_SIZE], char *nextValue)
 {
 	char *currentStr;
-	//GRect rect = layer_get_frame(&line->currentLayer.layer);
-	currentStr = lineStr[1]; //(rect.origin.x == 0) ? lineStr[0] : lineStr[1]; //fails to update fun_tens to fun_tens_pre
+	GRect rect = layer_get_frame(&line->currentLayer.layer);
+	currentStr = (rect.origin.x == 0) ? lineStr[0] : lineStr[1]; //fails to update fun_tens to fun_tens_pre
 
 	if (memcmp(currentStr, nextValue, strlen(nextValue)) != 0 ||
 		(strlen(nextValue) == 0 && strlen(currentStr) != 0)) {
@@ -158,7 +144,7 @@ void display_initial_time(PblTm *t)
 // Configure the first line of text
 void configureBoldLayer(TextLayer *textlayer)
 {
-	text_layer_set_font(textlayer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_COOLVETICA_40)));
+	text_layer_set_font(textlayer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_COOLVETICA_38)));
 	text_layer_set_text_color(textlayer, GColorWhite);
 	text_layer_set_background_color(textlayer, GColorClear);
 	text_layer_set_text_alignment(textlayer, GTextAlignmentLeft);
@@ -167,7 +153,7 @@ void configureBoldLayer(TextLayer *textlayer)
 // Configure for the 2nd and 3rd lines
 void configureLightLayer(TextLayer *textlayer)
 {
-	text_layer_set_font(textlayer, font_fun_lg);
+	text_layer_set_font(textlayer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CICLE_FINA_40)));
 	text_layer_set_text_color(textlayer, GColorWhite);
 	text_layer_set_background_color(textlayer, GColorClear);
 	text_layer_set_text_alignment(textlayer, GTextAlignmentLeft);
@@ -229,20 +215,20 @@ void handle_init(AppContextRef ctx) {
 	resource_init_current_app(&APP_RESOURCES);
 	
 	// 1st line layers
-	text_layer_init(&line1.currentLayer, GRect(0, 10, 144, 50));
-	text_layer_init(&line1.nextLayer, GRect(144, 10, 144, 50));
+	text_layer_init(&line1.currentLayer, GRect(0, 16, 144, 50));
+	text_layer_init(&line1.nextLayer, GRect(144, 16, 144, 50));
 	configureBoldLayer(&line1.currentLayer);
 	configureBoldLayer(&line1.nextLayer);
 
 	// 2nd layers
-	text_layer_init(&line2.currentLayer, GRect(0, 47, 144, 50));
-	text_layer_init(&line2.nextLayer, GRect(144, 47, 144, 50));
+	text_layer_init(&line2.currentLayer, GRect(0, 54, 144, 50));
+	text_layer_init(&line2.nextLayer, GRect(144, 54, 144, 50));
 	configureLightLayer(&line2.currentLayer);
 	configureLightLayer(&line2.nextLayer);
 
 	// 3rd layers
-	text_layer_init(&line3.currentLayer, GRect(0, 84, 144, 50));
-	text_layer_init(&line3.nextLayer, GRect(144, 84, 144, 50));
+	text_layer_init(&line3.currentLayer, GRect(0, 91, 144, 50));
+	text_layer_init(&line3.nextLayer, GRect(144, 91, 144, 50));
 	configureLightLayer(&line3.currentLayer);
 	configureLightLayer(&line3.nextLayer);
 
