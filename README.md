@@ -11,3 +11,8 @@ The Japanese (Romanji) version of the [Pebble Text Watch project](https://github
 
 [Here's the download page](http://www.mypebblefaces.com/apps/8525/6127/)
 
+
+Version | Release Notes
+--- | ---
+1.0.0 | It works!
+2.0.0 | Updated to work with Pebble 2.0 SDK, firmware and mobile apps
