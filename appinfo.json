@@ -1,12 +1,12 @@
 {
-  "uuid": "496e04ad-132a-48ab-b165-7ff4a99872d2",
+  "uuid": "fc8e6893-8f07-4561-8f85-1263a37afb12", 
   "shortName": "Japanese (Romanji)",
   "longName": "Japanese Text Watch (Romanji)",
   "companyName": "Alexander Pico",
   "versionCode": 2,
   "versionLabel": "2.0.0",
   "watchapp": {
-    "watchface": false
+    "watchface": true
   },
   "appKeys": {},
   "resources": {
